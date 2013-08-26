@@ -1,45 +1,32 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <title>solRess</title>
+<div data-role="page">
+  <div data-role="header">
+    <h1>SolRss</h1>
+    <!-- <div data-role="navbar" data-iconpos="left"> -->
+    <!--   <ul> -->
+    <!--     <li><a href="#" data-icon="gear">Menu</a></li> -->
+    <!--   </ul> -->
+    <!-- </div> -->
+  </div>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" />
-    <script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
-    <script src="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
-    <div data-role="page">
+  <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+      <% for(var dateitem in items) { %>
+      <li data-role="list-divider">
+        <%= dateitem %>
+        <span class="ui-li-count"><%= items[dateitem].length %></span>
+      </li>
+      <% items[dateitem].forEach(function(i) { %>
+      <li><a href="<%= i.link %>" target="_blank">
+          <h1 style="white-space:normal"><%= i.title %></h1>
+          <p>
+            <%= i.date.getHours() %>時<%= i.date.getMinutes() %>分　|　
+            <%= i.meta.title %>
+          </p>
+      </a></li>
+      <% }) %>
+      <% } %>
+    </ul>
+  </div>
+</div>
 
-      <div data-role="header">
-        <h1>SolRss</h1>
-      </div><!-- /header -->
 
-      <div data-role="content">
-        <ul data-role="listview" data-inset="true">
-
-          <% for(var dateitem in items) { %>
-          <li data-role="list-divider">
-            <%= dateitem %>
-            <span class="ui-li-count"><%= items[dateitem].length %></span>
-          </li>
-            <% items[dateitem].forEach(function(i) { %>
-            <li><a href="<%= i.link %>" target="_blank">
-                <h1 style="white-space:normal"><%= i.title %></h1>
-                <p>
-                  <%= i.date.getHours() %>時<%= i.date.getMinutes() %>分　|　
-                  <%= i.meta.title %>
-                </p>
-            </a></li>
-            <% }) %>
-          <% } %>
-
-        </ul>
-      </div><!-- /content -->
-
-    </div><!-- /page -->
-
-  </body>
-</html>

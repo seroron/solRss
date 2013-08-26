@@ -45,6 +45,7 @@ var getRssInfoList = function(urls, callback) {
 }
 
 exports.index = function(req, res){
+
     getRssInfoList(['http://d.hatena.ne.jp/yaneurao/rss',
                     'http://feed.rssad.jp/rsshttp://www.100shiki.com/feed',
                     'http://www.ideaxidea.com/feed',

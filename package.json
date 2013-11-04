@@ -9,7 +9,7 @@
     "express": "3.3.5",
     "express-partials": "*",
     "ejs": "*",
-    "forever": "*",
+    "pm2": "*",
     "feedparser": "*",
     "async": "*",
     "mongoose": "*",

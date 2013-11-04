@@ -6,11 +6,43 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
     <link rel="stylesheet" href="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" />
-    <script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
-    <script src="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <%- body %>
+    <div data-role="page">
+      <div data-role="header">
+        <h1>SolRss</h1>
+        <a href="#settingPopup" data-icon="gear" class="ui-btn-right" 
+           data-rel="popup" data-transition="slide" data-position-to="window" data-role="button">Settings</a>
+        <div data-role="navbar">
+          <ul>
+            <li><a href="/">全サイト</a></li>
+            <li><a href="/rssSite">登録サイト別</a></li>
+          </ul>
+        </div>
+        <% if (typeof notice !== 'undefined') { %>
+        <div><%= notice %></div>
+        <% } %>
+      </div>
+
+      <%- body %>
+
+    <div data-role="popup" id="settingPopup" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
+      <a href="#" data-rel="back" data-role="button" data-theme="a" 
+         data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+      <br>
+      <button data-theme="a" data-icon="grid" data-mini="true">Menu</button>
+      <button data-theme="a" data-icon="search" data-mini="true">Search</button>
+      
+      <a href="#" data-rel="back" data-role="button" data-theme="a" 
+         data-icon="delete" >Close</a>
+    </div>
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+    <script src="/js/solrss.js"></script>
   </body>
 </html>

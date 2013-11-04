@@ -1,22 +1,24 @@
-<div data-role="page">
+<div data-role="content">
+  <form action="/rssSite" method="post">
+    <div data-role="fieldcontain">
+      <label for="url" >URL：</label>
+      <input type="text" name="url" id="url_input" data-mini="true" />
+      <input type="submit" value="登録"  data-theme="b">
+    </div>
+  </form>
 
-  <div data-role="header">
-    <h1>SolRss</h1>
-  </div>
 
-  <div data-role="content">
-    <ul data-role="listview" data-inset="true">
-      <% for(var s in sites) { %>
-      <li>
-        <a href="#">    
-          <h1 style="white-space:normal"><%= sites[s].title %></h1>
-          <p><%= sites[s].link %></p>
-        </a>
-      </li>
-      <% } %>
-    </ul>
-  </div>
-
+  <ul data-role="listview" data-inset="true">
+    <% for(var s in sites) { %>
+    <li>
+      <a href="/rssSite/<%= sites[s]._id %>">    
+        <h1 style="white-space:normal"><%= sites[s].title %></h1>
+        <p><%= sites[s].link %></p>
+      </a>
+    </li>
+    <% } %>
+  </ul>
 </div>
+
 
 

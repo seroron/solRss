@@ -8,8 +8,7 @@ module.exports = function() {
         title: {type: String,
                 required: true},
         date: {type: Date},
-        siteTitle: {type: String}
-        
+        rssSite: {type: mongoose.Schema.Types.ObjectId, ref: 'RssSite'},
     });
     mongoose.model("Rss", RssSchema)
 };

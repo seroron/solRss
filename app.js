@@ -6,7 +6,6 @@
 var express = require('express');
 var partials = require('express-partials');
 var routes = require('./routes');
-var user = require('./routes/user');
 var rssSite = require('./routes/rssSite');
 var updateRss = require('./cron/updateRss');
 var http = require('http');
@@ -19,7 +18,7 @@ require("./schema/rssSchema.js")();
 require("./schema/rssSiteSchema.js")();
 
 // all environments
-app.set('port', process.env.PORT || 8088);
+app.set('port', process.env.PORT || 18088);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(partials());
@@ -37,7 +36,8 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/rssSite', rssSite.index);
-app.get('/users', user.list);
+app.get('/rssSite/:id', rssSite.show);
+app.post('/rssSite', rssSite.create);
 
 var mongoose = require('mongoose');
 global.db = mongoose.connect('mongodb://localhost/solRss',

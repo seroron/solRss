@@ -1,0 +1,14 @@
+    <ul data-role="listview" data-inset="true">
+      <% for(var dateitem in items) { %>
+      <li data-role="list-divider">
+        <%= dateitem %>
+        <span class="ui-li-count"><%= items[dateitem].length %></span>
+      </li>
+      <% items[dateitem].forEach(function(i) { %>
+      <li><a href="<%= i.link %>" target="_blank">
+          <h1 style="white-space:normal"><%= i.title %></h1>
+          <p><%= i.date.getHours() %>時<%= i.date.getMinutes() %>分　|　<%= i.rssSite.title %></p>
+      </a></li>
+      <% }) %>
+      <% } %>
+    </ul>

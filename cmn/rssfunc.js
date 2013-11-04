@@ -19,6 +19,11 @@ exports.getSiteData = function(url, callback) {
 exports.getRssList = function(query, callback) {
 
     var Rss  = global.db.model('Rss');
+    
+    query["title"] = {$not: /^PR:/};
+
+    console.log(query);
+
     Rss.find(query)
         .populate('rssSite')
         .sort({date: 'desc'})

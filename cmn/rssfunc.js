@@ -22,8 +22,6 @@ exports.getRssList = function(query, callback) {
     
     query["title"] = {$not: /^PR:/};
 
-    console.log(query);
-
     Rss.find(query)
         .populate('rssSite')
         .sort({date: 'desc'})
@@ -53,28 +51,33 @@ exports.updateRssData = function(rssSite, callback) {
     var RssSite = global.db.model('RssSite');
 
     request(rssSite.link)
-        .pipe(new FeedParser({addmeta : true}))
-        .on('error', function(error) {
-	    // always handle errors
-	    console.log(error);
+        .pipe(new FeedParser())
+        .on('error', function(err) {
+	    console.error("on error:", err);
         })
         .on('meta', function (meta) {
-            RssSite.update({link: rssSite.link}, { $set: {title: meta.title}     },
+            RssSite.update({link: rssSite.link}, { $set: {title: meta.title}},
                            function(err, doc) {
-                               console.log(err);
+                               if(err) {
+                                   console.log("meta:", err);
+                               }
                            });
         })
         .on('readable', function () {
 	    var stream = this;
             var item;
 	    while (item = stream.read()) {
-                Rss.create({link: item.link,
-                            title: item.title,
-                            date: item.date,
-                            rssSite: rssSite._id},
-                           function(err, doc) {
-                               console.log(err);
-                           });
+                Rss.findOneAndUpdate({link: item.link},
+                                     { $set: {link: item.link,
+                                              title: item.title,
+                                              date: item.date,
+                                              rssSite: rssSite._id}},
+                                     {upsert: true},
+                                     function(err, doc) {
+                                         if(err) {
+                                             console.log("findAndUpdate:", err);
+                                         }
+                                     });
 	    }
         })
         .on('end',  function(){

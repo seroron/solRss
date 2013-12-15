@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -6,6 +5,7 @@
 var express = require('express');
 var partials = require('express-partials');
 var routes = require('./routes');
+var rss     = require('./routes/rss');
 var rssSite = require('./routes/rssSite');
 var updateRss = require('./cron/updateRss');
 var http = require('http');
@@ -29,12 +29,13 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
 app.get('/', routes.index);
+app.get('/rss/:id', rss.show);
+app.post('/rss/:id', rss.update);
 app.get('/rssSite', rssSite.index);
 app.get('/rssSite/:id', rssSite.show);
 app.post('/rssSite', rssSite.create);

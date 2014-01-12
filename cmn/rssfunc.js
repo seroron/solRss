@@ -25,18 +25,18 @@ exports.getRssList = function(query, callback) {
     Rss.find(query)
         .populate('rssSite')
         .sort({date: 'desc'})
-        .limit(100)
+        .limit(300)
         .exec(function(err, items) {
             // items.sort(function(a, b) {
             //     return b.date.getTime() - a.date.getTime();
             // });
             if(items) {
-                items = us.groupBy(items,
-                                   function(i) {
-                                       return "" + i.date.getFullYear() + 
-                                           "/" + (i.date.getMonth()+1) + 
-                                           "/" + i.date.getDate();
-                                   });
+                // items = us.groupBy(items,
+                //                    function(i) {
+                //                        return "" + i.date.getFullYear() + 
+                //                            "/" + (i.date.getMonth()+1) + 
+                //                            "/" + i.date.getDate();
+                //                    });
                 
                 callback(null, items);
             } else {

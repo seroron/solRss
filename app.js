@@ -34,6 +34,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/rss', rss.index);
 app.get('/rss/:id', rss.show);
 app.post('/rss/:id', rss.update);
 app.get('/rssSite', rssSite.index);

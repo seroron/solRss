@@ -1,4 +1,13 @@
 
+var rssfunc = require('../cmn/rssfunc');
+
+exports.index = function(req, res){
+    rssfunc.getRssList({}, 
+                       function(err, items) {
+                           res.json(items);
+                       });
+}
+
 exports.show = function(req, res){
 
     var id = req.param('id');

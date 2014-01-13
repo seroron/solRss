@@ -1,36 +1,23 @@
-    <ul data-role="listview" data-inset="true">
-      <% for(var dateitem in items) { %>
+  <div ng-controller="RssCtrl">
+    <ul id="rsslistview" data-role="listview" data-inset="true" ng-repeat="rss in rsses">
       <li data-role="list-divider">
-        <%= dateitem %>
-        <span class="ui-li-count"><%= items[dateitem].length %></span>
+        {{rss[0]}}
+        <span class="ui-li-count">{{rss[1].length}}</span>
       </li>
-      <% items[dateitem].forEach(function(i) { %>
-      <li>
-        <a href="/rss/<%= i._id %>" target="_blank">
-          <h3 class="<% if(i.read){ %>read_rss <% } %>ui-li-heading" style="white-space:normal">
-            <%= i.title %>
+      <li ng-repeat="r in rss[1]">
+        <a href="#" ng-style="rssStyle(r)" ng-click="jump(r)">
+          <h3 class="ui-li-heading" style="white-space:normal">
+            {{r.title}}
           </h3>
-          <p class="<% if(i.read){ %>read_rss <% } %>ui-li-desc">
-            <%= i.date.getHours() %>時<%= i.date.getMinutes() %>分　|　<%= i.rssSite.title %>
+          <p class="ui-li-desc">
+            {{r.date.getHours()}}時{{r.date.getMinutes()}}分{{r.date.getSeconds()}}秒　|　{{r.rssSite.title}}
           </p>
         </a>
-        <form name="form1" method="post" action="Next.php">
 
         <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-            <% if(i.read){ %>
-            <button style="color:rgb(200,200,200)" data-theme="c" data-icon="check">既読</button>
-            <% } else { %>
-            <a href="#" data-role="button" data-theme="c" data-icon="check">未読</a>
-            <% } %>
-          <% if(i.favorite){ %>
-            <button data-theme="e" data-icon="star">お気に入り</button>
-          <% } else { %>
-          <a href="#" class="read_rss" data-role="button" data-theme="c" data-icon="star">お気に入り</a>
-          <% } %>
+          <a href="#" data-role="button" data-theme="c" data-icon="check" ng-style="rssReadStyle(r)" ng-click="changeRead(r)">{{rssReadValue(r)}}</a>
+          <a href="#" data-role="button" data-theme="{{rssFavoriteTheme(r)}}" data-icon="star"  ng-style="rssFavoriteStyle(r)" ng-click="changeFavorite(r)">お気に入り</a>
         </div>
-        </form>
-        
       </li>
-      <% }) %>
-      <% } %>
     </ul>
+  </div>

@@ -16,13 +16,13 @@
   </head>
   <body ng-app="app">
     <div data-role="page">
-      <div data-role="header" id="my-header">
-        <h1>SolRss</h1>
-        <a href="#mypanel" data-icon="gear" class="ui-btn-right" data-role="button">Settings</a>
-        <div data-role="navbar">
+      <div data-role="header" id="my-header" data-position="fixed">
+        <!-- <h1>SolRss</h1> -->
+        <div data-role="navbar" data-iconpos="left">
           <ul>
-            <li><a href="/">全サイト</a></li>
-            <li><a href="/rssSite">登録サイト別</a></li>
+            <li><a href="/" data-icon="home">All</a></li>
+            <li><a href="/rssSite" data-icon="grid">Site</a></li>
+            <li><a href="#mypanel" data-icon="gear" data-role="button">Settings</a></li>
           </ul>
         </div>
         <% if (typeof notice !== 'undefined') { %>

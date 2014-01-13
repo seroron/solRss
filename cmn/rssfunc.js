@@ -25,7 +25,7 @@ exports.getRssList = function(query, callback) {
     Rss.find(query)
         .populate('rssSite')
         .sort({date: 'desc'})
-        .limit(300)
+        .limit(100)
         .exec(function(err, items) {
             // items.sort(function(a, b) {
             //     return b.date.getTime() - a.date.getTime();

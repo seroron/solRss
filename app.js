@@ -42,7 +42,7 @@ app.get('/rssSite/:id', rssSite.show);
 app.post('/rssSite', rssSite.create);
 
 var mongoose = require('mongoose');
-global.db = mongoose.connect('mongodb://localhost/solRss',
+global.db = mongoose.connect(process.env.DBURI || 'mongodb://localhost/solRss',
                              function(err) {
                                  updateRss.startUpdate();
                              });

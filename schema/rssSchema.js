@@ -9,7 +9,8 @@ module.exports = function() {
                 required: true},
         date: {type: Date},
         rssSite: {type: mongoose.Schema.Types.ObjectId, ref: 'RssSite'},
-        read: {type: Boolean}
+        read: {type: Boolean},
+        favorite: {type: Boolean}
     });
     mongoose.model("Rss", RssSchema)
 };

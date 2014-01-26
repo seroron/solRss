@@ -6,32 +6,33 @@ angular.module('app', ['ngResource']).
     });
 
 function RssCtrl($scope,$resource) {
-    var rss = $resource('/rss/:id');
-                        // null,
-                        // {'save':   {method:'POST', 
-                        //             transformResponse: function(data, headers) {
-                        //                 data.date = new Date(data.date);
-                        //                 return data;
-                        //             }},
-                        //  'query':  {method:'GET', isArray:true}});
-    
-    rss.query({}, function(r, h) {
-        r = _.map(r, function(i) {
-            i.date = new Date(i.date);
-            return i;
+
+    $scope.load = function(rssSite) {
+        var rss = $resource('/rss/:id');
+        
+        var q = {};
+        if(rssSite) {
+            q.rssSite = rssSite;
+        }
+
+        rss.query(q, function(r, h) {
+            r = _.map(r, function(i) {
+                i.date = new Date(i.date);
+                return i;
+            });
+            // r =  r.sort(function(a, b) {
+            //     return b.date.getTime() - a.date.getTime();
+            // });
+            r = _.groupBy(r,
+                          function(i) {
+                              return "" + i.date.getFullYear() + 
+                                  "/" + (i.date.getMonth()+1) + 
+                                  "/" + i.date.getDate();
+                          });
+            r = _.pairs(r);
+            $scope.rsses = r;
         });
-        // r =  r.sort(function(a, b) {
-        //     return b.date.getTime() - a.date.getTime();
-        // });
-        r = _.groupBy(r,
-                      function(i) {
-                          return "" + i.date.getFullYear() + 
-                              "/" + (i.date.getMonth()+1) + 
-                              "/" + i.date.getDate();
-                      });
-        r = _.pairs(r);
-        $scope.rsses = r;
-    });
+    }
 
     update = function(rss) {
         rss.$save({id: rss._id},
@@ -42,9 +43,9 @@ function RssCtrl($scope,$resource) {
     },
 
     $scope.jump = function(rss) {
+        window.open(rss.link , "_blank");
         rss.read = true;
         update(rss);
-        window.open("/rss/"+rss._id , "_blank");
     }
 
     $scope.rssStyle = function(rss) {

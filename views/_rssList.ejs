@@ -1,4 +1,8 @@
-  <div ng-controller="RssCtrl">
+  <div ng-controller="RssCtrl" ng-init="load('<%=rssSite%>')">
+    <!-- <div data-role="controlgroup" data-type="horizontal"> -->
+    <!--   <input type="search" ng-model="keyword" /> -->
+    <!--   <a href="#" data-role="button">search</a> -->
+    <!-- </div> -->
     <ul id="rsslistview" data-role="listview" data-inset="true" ng-repeat="rss in rsses">
       <li data-role="list-divider">
         {{rss[0]}}

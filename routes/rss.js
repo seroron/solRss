@@ -2,7 +2,14 @@
 var rssfunc = require('../cmn/rssfunc');
 
 exports.index = function(req, res){
-    rssfunc.getRssList({}, 
+    
+    var query = {};
+    if(req.query.rssSite) {
+        query.rssSite = req.query.rssSite;
+    }
+
+    console.log("rss index:",query);
+    rssfunc.getRssList(query, 
                        function(err, items) {
                            res.json(items);
                        });

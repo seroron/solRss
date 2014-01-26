@@ -11,7 +11,7 @@
   <ul data-role="listview" data-inset="true">
     <% for(var s in sites) { %>
     <li>
-      <a href="/rssSite/<%= sites[s]._id %>">    
+      <a href="/?rssSite=<%= sites[s]._id %>" data-ajax="false">
         <h1 style="white-space:normal"><%= sites[s].title %></h1>
         <p><%= sites[s].link %></p>
       </a>

@@ -7,12 +7,23 @@ angular.module('app', ['ngResource']).
 
 function RssCtrl($scope,$resource) {
 
-    $scope.load = function(rssSite) {
+    $scope.load = function(reload, rssSite) {
         var rss = $resource('/rss/:id');
+
+        $scope.loadArticleDisable = true;
         
         var q = {};
         if(rssSite) {
             q.rssSite = rssSite;
+        }
+
+        console.log(reload);
+        if(reload) {
+            var last = $scope.rsses[$scope.rsses.length - 1];
+            q.beginDate = last.mili_time;
+            q.beginID   = last._id;
+        } else {
+            $scope.rsses = []
         }
 
         rss.query(q, function(r, h) {
@@ -20,17 +31,19 @@ function RssCtrl($scope,$resource) {
                 i.date = new Date(i.date);
                 return i;
             });
-            // r =  r.sort(function(a, b) {
-            //     return b.date.getTime() - a.date.getTime();
-            // });
-            r = _.groupBy(r,
-                          function(i) {
-                              return "" + i.date.getFullYear() + 
-                                  "/" + (i.date.getMonth()+1) + 
-                                  "/" + i.date.getDate();
-                          });
-            r = _.pairs(r);
-            $scope.rsses = r;
+            r =  r.sort(function(a, b) {
+                return b.date.getTime() - a.date.getTime();
+            });
+            $scope.rsses   = $scope.rsses.concat(r);
+
+            $scope.rssGrps = _.pairs(_.groupBy($scope.rsses,
+                                               function(i) {
+                                                   return "" + i.date.getFullYear() + 
+                                                       "/" + (i.date.getMonth()+1) + 
+                                                       "/" + i.date.getDate();
+                                               }));
+
+            $scope.loadArticleDisable = false;
         });
     }
 
@@ -40,7 +53,14 @@ function RssCtrl($scope,$resource) {
                       i.date = new Date(i.date);
                       return i;
                   });
-    },
+    }
+
+    $scope.loadArticles = function() {
+        //   rss_buf = $scope.rsses;
+        // console.log($scope.rsses);
+        // console.log("" + $scope.lastArticle.date);
+        $scope.load(true, '');
+    }
 
     $scope.jump = function(rss) {
         window.open(rss.link , "_blank");

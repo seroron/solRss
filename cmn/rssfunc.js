@@ -16,7 +16,7 @@ exports.getSiteData = function(url, callback) {
         })
 }
 
-exports.getRssList = function(query, callback) {
+exports.getRssList = function(query, lim, callback) {
 
     var Rss  = global.db.model('Rss');
     
@@ -25,20 +25,25 @@ exports.getRssList = function(query, callback) {
     Rss.find(query)
         .populate('rssSite')
         .sort({date: 'desc'})
-        .limit(100)
+        .limit(lim)
         .exec(function(err, items) {
-            // items.sort(function(a, b) {
-            //     return b.date.getTime() - a.date.getTime();
-            // });
             if(items) {
-                // items = us.groupBy(items,
-                //                    function(i) {
-                //                        return "" + i.date.getFullYear() + 
-                //                            "/" + (i.date.getMonth()+1) + 
-                //                            "/" + i.date.getDate();
-                //                    });
+                ix = us.map(items, function(i){
+                    var obj = i.toObject();
+                    obj.mili_time = i.date.getTime();
+                    return obj;
+                });
+
+               //  properties = "";
+               //  for (var prop in items[0]){
+               //      properties += prop + "=" + items[0][prop] + "\n";
+               //  }
+               //  console.log(properties);
                 
-                callback(null, items);
+               // console.log(ix);
+
+                callback(null, ix);
+
             } else {
                 callback(err, null);
             }

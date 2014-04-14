@@ -1,4 +1,3 @@
-
 var rssfunc = require('../cmn/rssfunc');
 
 exports.index = function(req, res){
@@ -7,9 +6,15 @@ exports.index = function(req, res){
     if(req.query.rssSite) {
         query.rssSite = req.query.rssSite;
     }
+    if(req.query.beginDate) {
+        console.log('query:', req.query.beginDate);
+        query.date = {$lt : new Date(parseInt(req.query.beginDate))};
+//        query._id  = {$lt : req.query.beginID};
+    }
 
     console.log("rss index:",query);
     rssfunc.getRssList(query, 
+                       10,
                        function(err, items) {
                            res.json(items);
                        });

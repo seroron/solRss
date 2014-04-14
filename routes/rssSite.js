@@ -19,6 +19,7 @@ exports.show = function(req, res){
     console.log(req.params.id);
 
     rssfunc.getRssList({rssSite: req.params.id}, 
+                       100,
                        function(err, items) {
                            res.render('rssSite/show', { 
                                'items' : items

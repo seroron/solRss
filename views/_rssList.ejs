@@ -1,9 +1,9 @@
-  <div ng-controller="RssCtrl" ng-init="load('<%=rssSite%>')">
+  <div ng-controller="RssCtrl" ng-init="load(false, '<%=rssSite%>')">
     <!-- <div data-role="controlgroup" data-type="horizontal"> -->
     <!--   <input type="search" ng-model="keyword" /> -->
     <!--   <a href="#" data-role="button">search</a> -->
     <!-- </div> -->
-    <ul id="rsslistview" data-role="listview" data-inset="true" ng-repeat="rss in rsses">
+    <ul id="rsslistview" data-role="listview" data-inset="true" ng-repeat="rss in rssGrps">
       <li data-role="list-divider">
         {{rss[0]}}
         <span class="ui-li-count">{{rss[1].length}}</span>
@@ -24,4 +24,5 @@
         </div>
       </li>
     </ul>
+    <a href="#" data-role="button" data-theme="c" data-icon="check" ng-click="loadArticles()" ng-disabled="loadArticleDisable">load 10 articles</a>
   </div>

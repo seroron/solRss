@@ -1,8 +1,20 @@
-angular.module('app', ['ngResource']).
+angular.
+    module('app', ['ngResource']).
     directive('jqlist', function() {
         return function($scope, el, attr) {
             el.listview('refresh');
         }
+    }).
+    directive('jqButton', function() {
+        return function(scope, element, attrs) {
+            element.button();
+
+            scope.$watch(attrs.jqButtonDisabled, function(value) {
+                //element.button("option", "disabled", value);
+                element.button(value ? 'disable' : 'enable');
+                element.button('refresh');
+            });
+        };
     });
 
 function RssCtrl($scope,$resource) {

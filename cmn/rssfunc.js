@@ -34,14 +34,6 @@ exports.getRssList = function(query, lim, callback) {
                     return obj;
                 });
 
-               //  properties = "";
-               //  for (var prop in items[0]){
-               //      properties += prop + "=" + items[0][prop] + "\n";
-               //  }
-               //  console.log(properties);
-                
-               // console.log(ix);
-
                 callback(null, ix);
 
             } else {

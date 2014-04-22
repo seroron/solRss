@@ -14,7 +14,7 @@ exports.index = function(req, res){
 
     console.log("rss index:",query);
     rssfunc.getRssList(query, 
-                       10,
+                       25,
                        function(err, items) {
                            res.json(items);
                        });

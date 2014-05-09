@@ -56,6 +56,9 @@ function RssCtrl($scope,$resource) {
                                                }));
 
             $scope.loadArticleDisable = false;
+        }, function(err) {
+            alert("load fail");
+            $scope.loadArticleDisable = false;
         });
     }
 

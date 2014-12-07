@@ -20,7 +20,7 @@ exports.index = function(req, res){
                        });
 }
 
-exports.show = function(req, res){
+exports.show = function(req, res) {
 
     var id = req.param('id');
 

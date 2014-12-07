@@ -1,4 +1,4 @@
-var FeedParser = require('feedparser')
+var FeedParser = require('feedparser');
 var request = require('request');
 var us = require('underscore');
 
@@ -10,9 +10,9 @@ exports.index = function(req, res){
     RssSite.find(function (err, sites) {
         res.render('rssSite/index', { 
             'sites' : sites
-        })
+        });
     });
-}
+};
 
 exports.show = function(req, res){
 
@@ -23,9 +23,9 @@ exports.show = function(req, res){
                        function(err, items) {
                            res.render('rssSite/show', { 
                                'items' : items
-                           })        
+                           });
                        });
-}
+};
 
 exports.create = function(req, res) {
     var url  = req.param('url');
@@ -44,9 +44,9 @@ exports.create = function(req, res) {
             res.render('rssSite/index', { 
                 'sites' : sites,
                 'notice': "登録失敗"
-            })
+            });
         });
-    }
+    };
 
     var RssSite = global.db.model('RssSite');
 
@@ -72,10 +72,15 @@ exports.create = function(req, res) {
                                            res.render('rssSite/index', { 
                                                'sites' : sites,
                                                'notice': "登録成功"
-                                           })
+                                           });
                                        });
                                    });
                                }
                            });
         });
-}
+};
+
+exports.del = function(req, res) {
+    console.log("del:", req);
+    res.render('rssSite/index');
+};

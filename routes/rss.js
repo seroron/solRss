@@ -1,4 +1,6 @@
 var rssfunc = require('../cmn/rssfunc');
+var us = require('underscore');
+
 
 exports.index = function(req, res){
     
@@ -6,10 +8,17 @@ exports.index = function(req, res){
     if(req.query.rssSite) {
         query.rssSite = req.query.rssSite;
     }
+
+    query.date = {};
     if(req.query.beginDate) {
-        console.log('query:', req.query.beginDate);
-        query.date = {$lt : new Date(parseInt(req.query.beginDate))};
-//        query._id  = {$lt : req.query.beginID};
+        us.extend(query.date ,{$lt : new Date(parseInt(req.query.beginDate))});
+    }
+    if(req.query.endDate) {
+        us.extend(query.date ,{$gt : new Date(parseInt(req.query.endDate))});
+    }
+    console.log(query.date);
+    if(us.isEmpty(query.date)) {
+        delete query.date;
     }
 
     console.log("rss index:",query);
@@ -18,7 +27,7 @@ exports.index = function(req, res){
                        function(err, items) {
                            res.json(items);
                        });
-}
+};
 
 exports.show = function(req, res) {
 
@@ -34,7 +43,7 @@ exports.show = function(req, res) {
             
             res.redirect(item.link);
         });
-}
+};
 
 exports.update = function(req, res) {
 
@@ -52,4 +61,4 @@ exports.update = function(req, res) {
             }
             res.json(item);
         });
-}
+};

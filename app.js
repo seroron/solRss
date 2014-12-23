@@ -28,6 +28,7 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'bower_components')));
 
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -40,6 +41,7 @@ app.post('/rss/:id', rss.update);
 app.get('/rssSite', rssSite.index);
 //app.get('/rssSite/:id', rssSite.show);
 app.post('/rssSite', rssSite.create);
+app.del('/rssSite', rssSite.del);
 
 var mongoose = require('mongoose');
 global.db = mongoose.connect(process.env.DBURI || 'mongodb://localhost/solRss',

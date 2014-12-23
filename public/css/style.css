@@ -4,5 +4,17 @@
 }
 
 .read_rss {
-    color: rgb(128, 128, 128);
+    color: #000000;
+    background-color: #888888;
+}
+
+.rss_site_title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis; /* Opera9,10対応 */
+}
+
+.rss_site_sub {
+    white-space: nowrap;
 }

@@ -1,4 +1,4 @@
-var FeedParser = require('feedparser')
+var FeedParser = require('feedparser');
 var request = require('request');
 
 var us = require('underscore');
@@ -13,8 +13,8 @@ exports.getSiteData = function(url, callback) {
         })
         .on('meta', function (meta) {
             callback(null, meta);
-        })
-}
+        });
+};
 
 exports.getRssList = function(query, lim, callback) {
 
@@ -40,7 +40,7 @@ exports.getRssList = function(query, lim, callback) {
                 callback(err, null);
             }
         });
-}
+};
 
 exports.updateRssData = function(rssSite, callback) {
 
@@ -79,5 +79,5 @@ exports.updateRssData = function(rssSite, callback) {
         })
         .on('end',  function(){
             callback(null);
-        })
-}
+        });
+};

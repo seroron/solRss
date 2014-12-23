@@ -3,43 +3,56 @@
   <head>
     <meta charset="UTF-8">
     <title>solRess</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+    <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
+    <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
-    <script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
-    <script src="https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-resource.min.js"></script>
-    <script src="/js/underscore-min.js"></script>
+    <script src="angular/angular.min.js"></script>
+    <script src="angular-resource/angular-resource.min.js"></script>
+    <script src="mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
+    <script src="underscore/underscore-min.js"></script>
     <script src="/js/solrss.js"></script>
   </head>
   <body ng-app="app">
-    <div data-role="page">
-      <div data-role="header" id="my-header" data-position="fixed">
-        <!-- <h1>SolRss</h1> -->
-        <div data-role="navbar" data-iconpos="left">
-          <ul>
-            <li><a href="/" data-icon="home" data-ajax="false">All</a></li>
-            <li><a href="/rssSite" data-icon="grid" data-ajax="false">Site</a></li>
-            <li><a href="#mypanel" data-icon="gear" data-role="button">Settings</a></li>
-          </ul>
+    <div class="app">
+
+      <div class="navbar navbar-app navbar-absolute-top">
+        <div class="navbar-brand navbar-brand-center">
+          Navbar Brand
         </div>
-        <% if (typeof notice !== 'undefined') { %>
-        <div><%= notice %></div>
-        <% } %>
+
+        <div class="btn-group pull-left">
+          <div class="btn btn-navbar">
+            Left Action
+          </div>
+        </div>
+
+        <div class="btn-group pull-right">
+          <div class="btn btn-navbar">
+            Right Action
+          </div>
+        </div>
       </div>
 
-      <%- body %>
+      <div class="app-body">
+        <div class='app-content'>
+          <ng-view class="app-content">
 
-      <div data-role="panel" id="mypanel" data-theme="a" data-position="right" data-display="push">
-        <!-- panel content goes here -->
-        aaa
-        <a href="#my-header" data-rel="close" data-role="button" data-icon="gear">Close panel</a>
+            <% if (typeof notice !== 'undefined') { %>
+              <div><%= notice %></div>
+              <% } %>
+              <div id="main">
+                <%- body %>
+              </div>
+          </ng-view>
+        </div>
       </div>
-
-
     </div>
 
+    
   </body>
 </html>

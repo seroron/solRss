@@ -1,29 +1,61 @@
 var app = angular.module('app', ['ngResource', 'mobile-angular-ui']);
 
 app.controller('RssCtrl', [
-    '$scope', '$resource',
-    function($scope, $resource) {
+    '$scope', '$resource', '$q', 
+    function($scope, $resource, $q) {
 
         $scope.load = function(reload, rssSite) {
-            var rss = $resource('/rss/:id');
 
-            $scope.loadArticleDisable = true;
+            if(!reload) {
+                $scope.rsses = [];
+                $scope.rsses_bg = [];
+            }
+
+            if ($scope.rsses_bg.length > 0) {
+                update_rss_view($scope.rsses_bg);
+                background_load(rssSite);
+            } else {
+                background_load(rssSite).then(
+                    function(result) {
+                        update_rss_view($scope.rsses_bg);
+                        background_load(rssSite);
+                    },
+                    function(reason) {
+                        alert(reason);
+                    }
+                );
+            }
+        };
+
+        update_rss_view = function(newrss) {
+            $scope.rsses   = $scope.rsses.concat(newrss);
+
+            $scope.rssGrps = _.pairs(_.groupBy($scope.rsses,
+                                               function(i) {
+                                                   return "" + i.date.getFullYear() + 
+                                                       "/" + (i.date.getMonth()+1) + 
+                                                       "/" + i.date.getDate();
+                                               }));    
+        };
+
+        background_load = function(rssSite) {
+            $scope.rsses_bg = [];
+
+            var rss = $resource('/rss/:id');
             
             var q = {};
             if(rssSite) {
                 q.rssSite = rssSite;
             }
 
-            console.log(reload);
-            if(reload) {
+            if($scope.rsses.length > 0) {
                 var last = $scope.rsses[$scope.rsses.length - 1];
                 q.beginDate = last.mili_time;
                 q.beginID   = last._id;
-            } else {
-                $scope.rsses = [];
             }
             //q.endDate   = (new Date(2014,12-1,14)).getTime();
 
+            var deferred = $q.defer();
             rss.query(q, function(r, h) {
                 r = _.map(r, function(i) {
                     i.date = new Date(i.date);
@@ -32,20 +64,14 @@ app.controller('RssCtrl', [
                 r =  r.sort(function(a, b) {
                     return b.date.getTime() - a.date.getTime();
                 });
-                $scope.rsses   = $scope.rsses.concat(r);
+                $scope.rsses_bg = r;
 
-                $scope.rssGrps = _.pairs(_.groupBy($scope.rsses,
-                                                   function(i) {
-                                                       return "" + i.date.getFullYear() + 
-                                                           "/" + (i.date.getMonth()+1) + 
-                                                           "/" + i.date.getDate();
-                                                   }));
-
-                $scope.loadArticleDisable = false;
+                deferred.resolve("ok");
             }, function(err) {
-                alert("load fail");
-                $scope.loadArticleDisable = false;
+                deferred.reject("load fail");
             });
+            
+            return deferred.promise;
         };
 
         update = function(rss) {
@@ -57,10 +83,6 @@ app.controller('RssCtrl', [
         };
 
         $scope.loadArticles = function() {
-            //   rss_buf = $scope.rsses;
-            // console.log($scope.rsses);
-            // console.log("" + $scope.lastArticle.date);
-            console.log("loadArticles");
             $scope.load(true, '');
         };
 

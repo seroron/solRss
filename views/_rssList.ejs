@@ -1,35 +1,33 @@
-<div ng-controller="RssCtrl" ng-init="load(false, '<%=rssSite%>')">
+<div ng-init="load(false, '<%=rssSite%>')">
 
-  <div class="scrollable">
-    <div class="scrollable-content" ui-scroll-bottom="loadArticles()">
+  <div class="list-group"> 
+    <div class="list-group-item clearfix" id="rsslistview" ng-class="{read_rss: isRead(r)}" ng-repeat="r in rsses" >
 
-      <div class="list-group" ng-repeat="rss in rssGrps">
-        {{rss[0]}}
-        <div class="list-group-item media" id="rsslistview" ng-class="{read_rss: isRead(r)}" ng-repeat="r in rss[1]" >
-          <div class="media-body">
-            <h4 class="media-heading" ng-click="jump(r)">
-              <strong>{{r.title}}</strong>
-            </h4>
-            <p class="rss_site_sub">
-              {{r.date.getHours()}}時{{r.date.getMinutes()}}分{{r.date.getSeconds()}}秒　|　<span class="rss_site_title">{{r.rssSite.title}}</span>
-            </p>
-            <span class="pull-right">
-              <button type="button" class="btn-mini btn-default" ng-style="rssReadStyle(r)" ng-click="changeRead(r)">
-                <span class="fa fa-book feature-icon"></span>
-                {{isRead(r) ? '既読' : '未読'}}
-              </button>
-              <button type="button" class="btn-mini" ng-class="isFavorite(r) ? 'btn-warning' : 'btn-default'" ng-click="changeFavorite(r)">
-                <span class="fa feature-icon" ng-class="isFavorite(r) ? 'fa-star' : 'fa-star-o'"></span>
-                お気に入り
-              </button>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="text-center">
-        <input type="button" class="btn btn-lg" value="load 25 articles" ng-click="loadArticles()" />
-      </div>
+      <h4 class="list-group-item-heading" ng-click="jump(r)">
+        <strong>{{r.title}}</strong>
+      </h4>
+      <p class="list-group-item-text rss_site_sub">
+        {{r.date.getFullYear()}}/{{r.date.getMonth()+1}}/{{r.date.getDate()}} 
+        {{r.date.getHours()}}時{{r.date.getMinutes()}}分{{r.date.getSeconds()}}秒　|　{{r.rssSite.title}}
+        <span class="pull-right">
+          <button type="button" a class="btn btn-xs btn-default" ng-style="rssReadStyle(r)" ng-click="changeRead(r)">
+            <span class="fa fa-book feature-icon"></span>
+            {{isRead(r) ? '既読' : '未読'}}
+          </button>
+          <button type="button" class="btn btn-xs" ng-class="isFavorite(r) ? 'btn-warning' : 'btn-default'" ng-click="changeFavorite(r)">
+            <span class="fa feature-icon" ng-class="isFavorite(r) ? 'fa-star' : 'fa-star-o'"></span>
+            お気に入り
+          </button>
+        </span>
+      </p>
     </div>
+  </div>
 
+  <div class="text-center">
+    <div id="load-icon"><div class="fa fa-spinner fa-spin fa-3x"></div>Loading...</div>
+    <button type="button" class="btn btn-lg btn-default" ng-click="loadArticles()">
+      load 25 articles
+    </button>
+    <h3>&nbsp;</h3>
   </div>
 </div>

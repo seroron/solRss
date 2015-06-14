@@ -1,3 +1,7 @@
+body {
+  padding-top: 70px;
+}
+
 .content {
     width: 100%;
     display: block;
@@ -8,13 +12,17 @@
     background-color: #888888;
 }
 
-.rss_site_title {
+.rss_site_sub {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis; /* Opera9,10対応 */
+    display: inline-block;
+    width: 100%;
+
 }
 
-.rss_site_sub {
-    white-space: nowrap;
+.aaa {
+    text-align: left;
+    position: absolute;
+    left: 0px;
 }

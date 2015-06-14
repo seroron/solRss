@@ -7,29 +7,55 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
     <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
-    <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
-    <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <script src="angular/angular.min.js"></script>
+    <script src="angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>    
     <script src="angular-resource/angular-resource.min.js"></script>
-    <script src="mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
     <script src="underscore/underscore-min.js"></script>
     <script src="/js/solrss.js"></script>
   </head>
   <body ng-app="app">
-    <div class="app">
+    <div class="app" ng-controller="RssCtrl">
 
-      <div class="navbar navbar-app navbar-absolute-top">
-        <div class="btn-group justified">
-          <a href="#" class="btn btn-navbar">2014/12/31</a>
-          <a href="#" class="btn btn-navbar"><i class="fa fa-github fa-navbar"></i> Sources</a>
-          <a href="#" class="btn btn-navbar"><i class="fa fa-exclamation-circle fa-navbar"></i> Issues</a>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="navbar-brand">
+          <span class="dropdown" dropdown on-toggle="toggled(open)">
+            <a href class="dropdown-toggle" dropdown-toggle>
+              {{rssDate | date:'yyyy-MM-dd'}}
+            </a>
+            <ul class="dropdown-menu pull-left">
+              <datepicker ng-model="rssDate" show-weeks="false" class="well well-sm" close-text="Close"></datepicker>
+            </ul>
+          </span>
         </div>
       </div>
+    
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+        </ul>
+
+
+      </div>
+    </nav>
 
       <div class="app-body">
         <div class='app-content'>
           <ng-view class="app-content">
+
 
             <% if (typeof notice !== 'undefined') { %>
               <div><%= notice %></div>

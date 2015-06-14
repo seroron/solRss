@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngResource', 'mobile-angular-ui']);
+var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
 
 app.controller('RssCtrl', [
     '$scope', '$resource', '$q', 
@@ -12,12 +12,12 @@ app.controller('RssCtrl', [
             }
 
             if ($scope.rsses_bg.length > 0) {
-                update_rss_view($scope.rsses_bg);
+                update_rss_view();
                 background_load(rssSite);
             } else {
                 background_load(rssSite).then(
                     function(result) {
-                        update_rss_view($scope.rsses_bg);
+                        update_rss_view();
                         background_load(rssSite);
                     },
                     function(reason) {
@@ -28,19 +28,18 @@ app.controller('RssCtrl', [
         };
 
         update_rss_view = function(newrss) {
-            $scope.rsses   = $scope.rsses.concat(newrss);
+            $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
+            $scope.rsses_bg = [];
 
-            $scope.rssGrps = _.pairs(_.groupBy($scope.rsses,
-                                               function(i) {
-                                                   return "" + i.date.getFullYear() + 
-                                                       "/" + (i.date.getMonth()+1) + 
-                                                       "/" + i.date.getDate();
-                                               }));    
+            // $scope.rssGrps = _.pairs(_.groupBy($scope.rsses,
+            //                                    function(i) {
+            //                                        return "" + i.date.getFullYear() + 
+            //                                            "/" + (i.date.getMonth()+1) + 
+            //                                            "/" + i.date.getDate();
+            //                                    }));    
         };
 
         background_load = function(rssSite) {
-            $scope.rsses_bg = [];
-
             var rss = $resource('/rss/:id');
             
             var q = {};
@@ -48,12 +47,15 @@ app.controller('RssCtrl', [
                 q.rssSite = rssSite;
             }
 
+
             if($scope.rsses.length > 0) {
                 var last = $scope.rsses[$scope.rsses.length - 1];
                 q.beginDate = last.mili_time;
                 q.beginID   = last._id;
             }
-            //q.endDate   = (new Date(2014,12-1,14)).getTime();
+            
+            var rd = $scope.rssDate;
+            q.endDate   = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
 
             var deferred = $q.defer();
             rss.query(q, function(r, h) {
@@ -64,7 +66,11 @@ app.controller('RssCtrl', [
                 r =  r.sort(function(a, b) {
                     return b.date.getTime() - a.date.getTime();
                 });
+                // console.log("1 " + r);
+                // console.log("2 " + $scope.rsses_bg);
+                //$scope.rsses_bg.concat(r);
                 $scope.rsses_bg = r;
+                // console.log("3 " + $scope.rsses_bg);
 
                 deferred.resolve("ok");
             }, function(err) {
@@ -117,5 +123,17 @@ app.controller('RssCtrl', [
             rss.favorite = !rss.favorite;
             update(rss);
         };
+
+        $scope.today = function() {
+            $scope.rssDate = new Date();
+        };
+        $scope.today();
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.opened = true;
+        };
+
     }
 ]);

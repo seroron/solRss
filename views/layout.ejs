@@ -30,14 +30,8 @@
           <span class="icon-bar"></span>
         </button>
         <div class="navbar-brand">
-          <span class="dropdown" dropdown on-toggle="toggled(open)">
-            <a href class="dropdown-toggle" dropdown-toggle>
-              {{rssDate | date:'yyyy-MM-dd'}}
-            </a>
-            <ul class="dropdown-menu pull-left">
-              <datepicker ng-model="rssDate" show-weeks="false" class="well well-sm" close-text="Close"></datepicker>
-            </ul>
-          </span>
+          <span ng-click="open($event)">{{rssDate | date:'yyyy/MM/dd' }}</span>
+          <input type="hidden" class="form-control" datepicker-popup="yyyy/MM/dd" show-weeks="false" ng-model="rssDate" is-open="opened" max-date="maxRssDate" show-button-bar="false" ng-required="true" close-text="Close" />
         </div>
       </div>
     

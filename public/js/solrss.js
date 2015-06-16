@@ -27,16 +27,13 @@ app.controller('RssCtrl', [
             }
         };
 
+        $scope.$watch('rssDate', function() {
+            $scope.load(false, null);
+        });
+
         update_rss_view = function(newrss) {
             $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
             $scope.rsses_bg = [];
-
-            // $scope.rssGrps = _.pairs(_.groupBy($scope.rsses,
-            //                                    function(i) {
-            //                                        return "" + i.date.getFullYear() + 
-            //                                            "/" + (i.date.getMonth()+1) + 
-            //                                            "/" + i.date.getDate();
-            //                                    }));    
         };
 
         background_load = function(rssSite) {
@@ -47,6 +44,9 @@ app.controller('RssCtrl', [
                 q.rssSite = rssSite;
             }
 
+            var rd = $scope.rssDate;
+
+            q.beginDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 23, 59, 59, 999).getTime();
 
             if($scope.rsses.length > 0) {
                 var last = $scope.rsses[$scope.rsses.length - 1];
@@ -54,7 +54,6 @@ app.controller('RssCtrl', [
                 q.beginID   = last._id;
             }
             
-            var rd = $scope.rssDate;
             q.endDate   = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
 
             var deferred = $q.defer();
@@ -128,6 +127,8 @@ app.controller('RssCtrl', [
             $scope.rssDate = new Date();
         };
         $scope.today();
+
+        $scope.maxRssDate = new Date();
 
         $scope.open = function($event) {
             $event.preventDefault();

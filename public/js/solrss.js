@@ -1,8 +1,42 @@
-var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
+var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap']);
 
-app.controller('RssCtrl', [
-    '$scope', '$resource', '$q', 
-    function($scope, $resource, $q) {
+ app.config(['$routeProvider',
+   function($routeProvider) {
+     $routeProvider.
+       when('/rssindex', {
+         templateUrl: 'rssIndex.html',
+         controller: 'RssIndexController'
+       }).
+       otherwise({
+         redirectTo: '/rssindex'
+       });
+   }]);
+
+
+ app.controller(
+     'NavberController',
+     ["$scope", "$resource",
+      function($scope, $resource) {
+
+        $scope.today = function() {
+            $scope.rssDate = new Date();
+        };
+        $scope.today();
+
+        $scope.maxRssDate = new Date();
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.opened = true;
+        };
+
+      }]);
+
+
+app.controller('RssIndexController', [
+    '$scope', '$resource', "$routeParams", '$q', 
+    function($scope, $resource, $routeParams, $q) {
 
         $scope.load = function(reload, rssSite) {
 

@@ -3,7 +3,6 @@
  */
 
 var express = require('express');
-var partials = require('express-partials');
 var routes = require('./routes');
 var rss     = require('./routes/rss');
 var rssSite = require('./routes/rssSite');
@@ -21,7 +20,6 @@ require("./schema/rssSiteSchema.js")();
 app.set('port', process.env.PORT || 18088);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(partials());
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());

@@ -1,38 +1,75 @@
+var parseDate = function(str) {
+    if(!str) return new Date();
+
+    var y = str.slice(0, 4);
+    var m = str.slice(4, 6);
+    var d = str.slice(6, 8);
+    var dt = new Date(y, m-1, d);
+    if(dt == null || dt.getFullYear() != y || dt.getMonth() + 1 != m || dt.getDate() != d) {
+        return new Date();
+    }
+
+    return dt;
+};
+
 var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap']);
 
- app.config(['$routeProvider',
-   function($routeProvider) {
-     $routeProvider.
-       when('/rssindex', {
-         templateUrl: 'rssIndex.html',
-         controller: 'RssIndexController'
-       }).
-       otherwise({
-         redirectTo: '/rssindex'
-       });
-   }]);
+app.config(['$routeProvider',
+            function($routeProvider) {
+                $routeProvider.
+                    when('/rssindex', {
+                        templateUrl: 'rssIndex.html',
+                        controller: 'RssIndexController'
+                    }).
+                    when('/dateselect', {
+                        templateUrl: 'dateSelect.html',
+                        controller: 'DateSelectController'
+                    }).
+                    otherwise({
+                        redirectTo: '/rssindex'
+                    });
+            }]);
 
 
- app.controller(
-     'NavberController',
-     ["$scope", "$resource",
-      function($scope, $resource) {
+app.controller(
+    'NavberController',
+    ["$scope", "$resource", "$routeParams",
+     function($scope, $resource, $routeParams) {
+
+
+         $scope.$on('$routeChangeSuccess', function(next, current) { 
+             $scope.rssDate = parseDate($routeParams.date);
+             // if(!$scope.rssDate) {
+             //     $scope.rssDate = new Date();
+             // }
+             
+         });
+
+
+         $scope.$watch(function() {
+             return $routeParams.date;
+         }, function(nVal,oVal) {
+             console.log("---", nVal);             
+             console.log("---", oVal);
+         });
+     }]);
+
+
+app.controller('DateSelectController', [
+    '$scope', '$resource', "$routeParams", '$q', 
+    function($scope, $resource, $routeParams, $q) {
 
         $scope.today = function() {
             $scope.rssDate = new Date();
         };
-        $scope.today();
+
+        $scope.rssDate = parseDate($routeParams.date);
+        if(!$scope.rssDate) {
+            $scope.rssDate = new Date();
+        }
 
         $scope.maxRssDate = new Date();
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = true;
-        };
-
-      }]);
-
+    }]);
 
 app.controller('RssIndexController', [
     '$scope', '$resource', "$routeParams", '$q', 
@@ -44,6 +81,14 @@ app.controller('RssIndexController', [
                 $scope.rsses = [];
                 $scope.rsses_bg = [];
             }
+
+            $scope.rssDate = parseDate($routeParams.date);
+            if(!$scope.rssDate) {
+                $scope.rssDate = new Date();
+            }
+
+            $scope.maxRssDate = new Date();
+
 
             if ($scope.rsses_bg.length > 0) {
                 update_rss_view();
@@ -60,10 +105,6 @@ app.controller('RssIndexController', [
                 );
             }
         };
-
-        $scope.$watch('rssDate', function() {
-            $scope.load(false, null);
-        });
 
         update_rss_view = function(newrss) {
             $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
@@ -89,6 +130,8 @@ app.controller('RssIndexController', [
             }
             
             q.endDate   = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
+
+            console.log("q=", q);
 
             var deferred = $q.defer();
             rss.query(q, function(r, h) {
@@ -156,19 +199,5 @@ app.controller('RssIndexController', [
             rss.favorite = !rss.favorite;
             update(rss);
         };
-
-        $scope.today = function() {
-            $scope.rssDate = new Date();
-        };
-        $scope.today();
-
-        $scope.maxRssDate = new Date();
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = true;
-        };
-
     }
 ]);

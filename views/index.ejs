@@ -28,10 +28,8 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="navbar-brand" ng-click="open($event)">
-          {{rssDate | date:'yyyy/MM/dd' }}
-          <input type="hidden" class="form-control" datepicker-popup="yyyy/MM/dd" show-weeks="false" 
-                 ng-model="rssDate" is-open="opened" max-date="maxRssDate" show-button-bar="false" ng-required="true" close-text="Close" />
+        <div class="navbar-brand">
+          <a ng-href="/#/dateselect?date={{rssDate| date:'yyyyMMdd'}}">{{rssDate | date:'yyyy/MM/dd' }}</a>
         </div>
       </div>
       
@@ -43,7 +41,7 @@
       </div>
     </nav>
     
-    <div class="content" ng-view=""></div>
+    <div ng-view=""></div>
 
   </body>
 </html>

@@ -14,8 +14,12 @@ var parseDate = function(str) {
 
 var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap']);
 
+app.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.html5Mode(true);
+}]);
+
 app.config(['$routeProvider',
-            function($routeProvider) {
+            function($routeProvider, $locationProvider) {
                 $routeProvider.
                     when('/rssindex', {
                         templateUrl: 'rssIndex.html',

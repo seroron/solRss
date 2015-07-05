@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <form action="{{'/#/rssindex?date=' + (rssDate| date:'yyyyMMdd')}}">
+  <form>
     <div class="form-group">
       <label for="rssdate">Rss Date</label>
       <div>
@@ -9,6 +9,6 @@
     </div>
 
     <button type="button" class="btn btn-sm btn-info" ng-click="today()">Today</button>
-    <button type="submit" class="btn btn-default">View</button>
+    <a ng-href="/rssindex?date={{rssDate| date:'yyyyMMdd'}}" class="btn btn-default">View</a>
   </form>
 </div>

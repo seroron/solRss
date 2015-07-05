@@ -1,4 +1,4 @@
-var FeedParser = require('feedparser')
+var FeedParser = require('feedparser');
 var request = require('request');
 var async = require('async');
 
@@ -17,10 +17,10 @@ var update = function() {
                    function(err) {
                    });
     });
-}
+};
 
 exports.startUpdate = function() {
 
     update();
     setInterval(update, 1000 * 60 * 30);
-}
+};

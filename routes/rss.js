@@ -50,7 +50,7 @@ exports.update = function(req, res) {
     console.log(req.body);
     var Rss  = global.db.model('Rss');    
 
-    Rss.findByIdAndUpdate(req.param('id'), 
+    Rss.findByIdAndUpdate(req.params['id'], 
                           {$set: {read: req.body.read, 
                                   favorite: req.body.favorite}})
         .populate('rssSite')

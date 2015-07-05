@@ -1,36 +1,42 @@
-/**
- * Module dependencies.
- */
-
 var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
+var http = require('http');
+var errorHandler = require('errorhandler');
+
 var routes = require('./routes');
 var rss     = require('./routes/rss');
 var rssSite = require('./routes/rssSite');
 var updateRss = require('./cron/updateRss');
-var http = require('http');
-var path = require('path');
 
 var app = express();
-
-// schema
-require("./schema/rssSchema.js")();
-require("./schema/rssSiteSchema.js")();
 
 // all environments
 app.set('port', process.env.PORT || 18088);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(logger('dev'));
+app.use(methodOverride());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
 
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+  app.use(errorHandler());
 }
+
+// schema
+require("./schema/rssSchema.js")();
+require("./schema/rssSiteSchema.js")();
 
 app.get('/', routes.index);
 app.get('/rss', rss.index);
@@ -39,14 +45,16 @@ app.post('/rss/:id', rss.update);
 app.get('/rssSite', rssSite.index);
 //app.get('/rssSite/:id', rssSite.show);
 app.post('/rssSite', rssSite.create);
-app.del('/rssSite', rssSite.del);
+app.delete('/rssSite', rssSite.del);
+app.get('*', function(req, res){res.render('index');});
 
 var mongoose = require('mongoose');
 global.db = mongoose.connect(process.env.DBURI || 'mongodb://localhost/solRss',
                              function(err) {
                                  updateRss.startUpdate();
+
+                                 http.createServer(app).listen(app.get('port'), function(){
+                                     console.log('Express server listening on port ' + app.get('port'));
+                                 });
                              });
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});

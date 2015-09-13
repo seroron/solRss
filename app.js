@@ -11,7 +11,6 @@ var errorHandler = require('errorhandler');
 var routes = require('./routes');
 var rss     = require('./routes/rss');
 var rssSite = require('./routes/rssSite');
-var updateRss = require('./cron/updateRss');
 
 var app = express();
 
@@ -34,10 +33,6 @@ if ('development' == app.get('env')) {
   app.use(errorHandler());
 }
 
-// schema
-require("./schema/rssSchema.js")();
-require("./schema/rssSiteSchema.js")();
-
 app.get('/', routes.index);
 app.get('/rss', rss.index);
 //app.get('/rss/:id', rss.show);
@@ -48,13 +43,10 @@ app.post('/rssSite', rssSite.create);
 app.delete('/rssSite', rssSite.del);
 app.get('*', function(req, res){res.render('index');});
 
-var mongoose = require('mongoose');
-global.db = mongoose.connect(process.env.DBURI || 'mongodb://localhost/solRss',
-                             function(err) {
-                                 updateRss.startUpdate();
+var dbcmn = require('./cmn/dbCmn.js');
+dbcmn.connectDB(function(err){
 
-                                 http.createServer(app).listen(app.get('port'), function(){
-                                     console.log('Express server listening on port ' + app.get('port'));
-                                 });
-                             });
-
+    http.createServer(app).listen(app.get('port'), function(){
+        console.log('Express server listening on port ' + app.get('port'));
+    });
+});

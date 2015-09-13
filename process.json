@@ -1,0 +1,21 @@
+{
+  apps : [{
+      name      : "solRssMain",
+      script    : "app.js",
+      args      : "[]",
+      env : {
+          PORT:  "18088",
+          DBURI: "mongodb://localhost/solRss"
+      }
+  },{
+      name      : "solRssCollector",
+      script    : "collector.js",
+      args      : "[]",
+      env: {
+          DBURI: "mongodb://localhost/solRss"
+      }
+  }]
+}
+ 
+
+

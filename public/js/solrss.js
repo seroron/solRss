@@ -78,6 +78,13 @@ app.controller('DateSelectController', [
 app.controller('RssIndexController', [
     '$scope', '$resource', "$routeParams", '$q', 
     function($scope, $resource, $routeParams, $q) {
+        
+        var RssService = $resource('/rss/:id', 
+                                   {id: '@id'},
+                                   {update: {method: 'POST', 
+                                             headers: {
+                                                 'Content-Type': 'application/json'
+                                             }}});
 
         $scope.load = function(reload, rssSite) {
 
@@ -110,13 +117,12 @@ app.controller('RssIndexController', [
             }
         };
 
-        update_rss_view = function(newrss) {
+        var update_rss_view = function(newrss) {
             $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
             $scope.rsses_bg = [];
         };
 
-        background_load = function(rssSite) {
-            var rss = $resource('/rss/:id');
+        var background_load = function(rssSite) {
             
             var q = {};
             if(rssSite) {
@@ -138,13 +144,13 @@ app.controller('RssIndexController', [
             console.log("q=", q);
 
             var deferred = $q.defer();
-            rss.query(q, function(r, h) {
+            RssService.query(q, function(r, h) {
                 r = _.map(r, function(i) {
                     i.date = new Date(i.date);
                     return i;
                 });
                 r =  r.sort(function(a, b) {
-                    return b.date.getTime() - a.date.getTime();
+                    return b.mili_time - a.mili_time;
                 });
                 // console.log("1 " + r);
                 // console.log("2 " + $scope.rsses_bg);
@@ -160,22 +166,14 @@ app.controller('RssIndexController', [
             return deferred.promise;
         };
 
-        update = function(rss) {
-            rss.$save({id: rss._id},
-                      function(i) {
-                          i.date = new Date(i.date);
-                          return i;
-                      });
-        };
-
         $scope.loadArticles = function() {
             $scope.load(true, '');
         };
 
         $scope.jump = function(rss) {
-            window.open(rss.link , "_blank");
             rss.read = true;
-            update(rss);
+            window.open(rss.link , "_blank");
+            RssService.update({id: rss._id}, {read: true});
         };
 
         $scope.rssStyle = function(rss) {
@@ -196,12 +194,12 @@ app.controller('RssIndexController', [
 
         $scope.changeRead = function(rss) {
             rss.read = !rss.read;
-            update(rss);
+            RssService.update({id: rss._id}, {read: rss.read});
         };
 
         $scope.changeFavorite = function(rss) {
             rss.favorite = !rss.favorite;
-            update(rss);
+            RssService.update({id: rss._id}, {favorite: rss.favorite});
         };
     }
 ]);

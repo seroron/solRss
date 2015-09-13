@@ -47,18 +47,26 @@ exports.show = function(req, res) {
 
 exports.update = function(req, res) {
 
-    console.log(req.body);
     var Rss  = global.db.model('Rss');    
 
-    Rss.findByIdAndUpdate(req.params['id'], 
-                          {$set: {read: req.body.read, 
-                                  favorite: req.body.favorite}})
+    var data = {};
+    if(req.body.read != null) {
+        data.read = req.body.read;
+    }
+    if(req.body.favorite != null) {
+        data.favorite = req.body.favorite;
+    }
+
+    console.log(data);
+
+    Rss.findByIdAndUpdate(req.params['id'], {$set: data})
         .populate('rssSite')
         .exec(function(err, item) {
             if(err) {
                 res.send(404);
                 return;
             }
-            res.json(item);
+            res.json('ok');
         });
 };
+

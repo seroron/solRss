@@ -12,7 +12,8 @@ module.exports = function() {
         read: {type: Boolean},
         favorite: {type: Boolean}
     });
-    mongoose.model("Rss", RssSchema)
+
+    mongoose.model("Rss", RssSchema);
 };
 
 

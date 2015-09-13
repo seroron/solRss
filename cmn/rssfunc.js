@@ -47,37 +47,57 @@ exports.updateRssData = function(rssSite, callback) {
     var Rss     = global.db.model('Rss');
     var RssSite = global.db.model('RssSite');
 
-    request(rssSite.link)
-        .pipe(new FeedParser())
-        .on('error', function(err) {
-	    console.error("on error:", err);
-        })
-        .on('meta', function (meta) {
-            RssSite.update({link: rssSite.link}, { $set: {title: meta.title}},
-                           function(err, doc) {
-                               if(err) {
-                                   console.log("meta:", err);
-                               }
-                           });
-        })
-        .on('readable', function () {
-	    var stream = this;
-            var item;
-	    while (item = stream.read()) {
-                Rss.findOneAndUpdate({link: item.link},
-                                     { $set: {link: item.link,
-                                              title: item.title,
-                                              date: item.date,
-                                              rssSite: rssSite._id}},
-                                     {upsert: true},
-                                     function(err, doc) {
-                                         if(err) {
-                                             console.log("findAndUpdate:", err);
-                                         }
-                                     });
-	    }
-        })
-        .on('end',  function(){
-            callback(null);
-        });
+    var req = request(rssSite.link);
+    var feedparser = new FeedParser();
+
+    req.on('error', function (err) {
+        console.error("request error: " + rssSite.title +": ", err);
+    });
+    req.on('response', function (res) {
+        var stream = this;
+        if (res.statusCode != 200) {
+            return this.emit('error', new Error('Bad status code'));
+        }
+
+        return stream.pipe(feedparser);
+    });
+
+    feedparser.on('error', function(err) {
+        console.error("parse error: " + rssSite.title +": ", err);
+    });
+    feedparser.on('meta', function (meta) {
+        //console.log("meta:" + meta.title + "  " + meta.link);
+
+        RssSite.update({link: rssSite.link}, { $set: {title: meta.title}},
+                       function(err, doc) {
+                           if(err) {
+                               console.log("meta:", err);
+                           }
+                       });
+    });
+    feedparser.on('readable', function() {
+        var stream = this;
+        var item;
+
+        while (item = stream.read()) {
+            //console.log("item: " + item.date + " " + item.title + "  " + item.link);
+
+            Rss.findOneAndUpdate({link: item.link},
+                                 { $set: {link: item.link,
+                                          title: item.title,
+                                          date: item.date,
+                                          rssSite: rssSite._id}},
+                                 {upsert: true},
+                                 function(err, doc) {
+                                     if(err) {
+                                         console.log("findAndUpdate:", err);
+                                     }
+                                 });
+        }
+    });
+    feedparser.on('end',  function(){
+        //console.log("parser end");
+        callback(null);
+    });
 };
+

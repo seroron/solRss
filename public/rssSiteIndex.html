@@ -1,0 +1,20 @@
+<div class="rss_content" ng-init="load(false, null)">
+
+  <div class="list-group"> 
+    <div class="list-group-item clearfix" id="rsslistview" ng-repeat="r in rssSites" >
+
+      <h4 class="list-group-item-heading">
+        <strong>{{r.title}}</strong>
+      </h4>
+      <p class="list-group-item-text rss_site_sub">
+        {{r.link}}
+        <span class="pull-right">
+          <button type="button" a class="btn btn-xs btn-default" ng-click="delSite(r)">
+            <span class="fa fa-book feature-icon"></span>
+            削除
+          </button>
+        </span>
+      </p>
+    </div>
+  </div>
+</div>

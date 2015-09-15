@@ -15,7 +15,7 @@ var parseDate = function(str) {
 var app = angular.module('app', ['ngRoute', 'ngResource', 'ui.bootstrap']);
 
 app.config(['$locationProvider', function($locationProvider) {
-  $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true);
 }]);
 
 app.config(['$routeProvider',
@@ -29,6 +29,10 @@ app.config(['$routeProvider',
                         templateUrl: 'dateSelect.html',
                         controller: 'DateSelectController'
                     }).
+                    when('/rssSiteIndex', {
+                        templateUrl: 'rssSiteIndex.html',
+                        controller: 'RssSiteIndexController'
+                    }).                    
                     otherwise({
                         redirectTo: '/rssindex'
                     });
@@ -200,6 +204,34 @@ app.controller('RssIndexController', [
         $scope.changeFavorite = function(rss) {
             rss.favorite = !rss.favorite;
             RssService.update({id: rss._id}, {favorite: rss.favorite});
+        };
+    }
+]);
+
+app.controller('RssSiteIndexController', [
+    '$scope', '$resource', "$routeParams", '$q', 
+    function($scope, $resource, $routeParams, $q) {
+        
+        var RssSiteService = $resource('/rssSite/:id', 
+                                       {id: '@_id'});
+
+        $scope.load = function(reload, rssSite) {
+
+            var deferred = $q.defer();
+            RssSiteService.query({}, function(r, h) {
+                $scope.rssSites = r;
+                deferred.resolve("ok");
+            }, function(err) {
+                deferred.reject("load fail");
+            });
+            
+            return deferred.promise;            
+        };
+
+        $scope.delSite = function(rss) {
+            RssSiteService.remove({id: rss._id});
+            $scope.rssSites = _.reject($scope.rssSites, 
+                                       function(i){return i._id == rss._id;});
         };
     }
 ]);

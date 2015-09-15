@@ -40,7 +40,7 @@ app.post('/rss/:id', rss.update);
 app.get('/rssSite', rssSite.index);
 //app.get('/rssSite/:id', rssSite.show);
 app.post('/rssSite', rssSite.create);
-app.delete('/rssSite', rssSite.del);
+app.delete('/rssSite/:id', rssSite.delete);
 app.get('*', function(req, res){res.render('index');});
 
 var dbcmn = require('./cmn/dbCmn.js');

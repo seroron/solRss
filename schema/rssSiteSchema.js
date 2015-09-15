@@ -7,7 +7,7 @@ module.exports = function() {
                 required: true,
                 unique: true}
     });
-    mongoose.model("RssSite", RssSiteSchema)
+    mongoose.model("RssSite", RssSiteSchema);
 };
 
 

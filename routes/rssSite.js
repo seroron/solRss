@@ -8,9 +8,7 @@ exports.index = function(req, res){
     var RssSite = global.db.model('RssSite');
 
     RssSite.find(function (err, sites) {
-        res.render('rssSite/index', { 
-            'sites' : sites
-        });
+        res.json(sites);
     });
 };
 
@@ -29,13 +27,6 @@ exports.show = function(req, res){
 
 exports.create = function(req, res) {
     var url  = req.param('url');
-    /*
-    if(!link.match(/(http|https):\/\/.+/)) {
-        res.render('index', { 
-            'items' : items
-        })
-    }
-    */
 
     var errFunc = function(err) {
         console.log(err);
@@ -80,7 +71,11 @@ exports.create = function(req, res) {
         });
 };
 
-exports.del = function(req, res) {
-    console.log("del:", req);
-    res.render('rssSite/index');
+exports.delete = function(req, res) {
+    var RssSite = global.db.model('RssSite');
+    console.log("delte id=" + req.params.id);
+
+    RssSite.find({_id: req.params.id}, function (err, sites) {
+        res.json({});
+    });
 };

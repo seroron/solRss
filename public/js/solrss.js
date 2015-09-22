@@ -147,8 +147,8 @@ app.controller('RssIndexController', [
             }
 
             var rd = $scope.rssDate;
-
-            q.beginDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 23, 59, 59, 999).getTime();
+            q.endDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
+            q.beginDate = q.endDate + 60*60*24*1000;
 
             if($scope.rsses.length > 0) {
                 var last = $scope.rsses[$scope.rsses.length - 1];
@@ -156,8 +156,6 @@ app.controller('RssIndexController', [
                 q.beginID   = last._id;
             }
             
-            q.endDate   = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
-
             console.log("q=", q);
 
             var deferred = $q.defer();

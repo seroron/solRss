@@ -14,12 +14,15 @@ exports.index = function(req, res){
         us.extend(query.date ,{$lt : new Date(parseInt(req.query.beginDate))});
     }
     if(req.query.endDate) {
-        us.extend(query.date ,{$gt : new Date(parseInt(req.query.endDate))});
+        us.extend(query.date ,{$gte : new Date(parseInt(req.query.endDate))});
     }
-    console.log(query.date);
     if(us.isEmpty(query.date)) {
         delete query.date;
     }
+
+    // if(req.query.beginID) {
+    //     query._id = {$ne: req.query.beginID};
+    // }
 
     console.log("rss index:",query);
     rssfunc.getRssList(query, 

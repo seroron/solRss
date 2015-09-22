@@ -38,37 +38,50 @@ app.config(['$routeProvider',
                     });
             }]);
 
-
 app.controller(
     'NavberController',
-    ["$scope", "$resource", "$routeParams",
-     function($scope, $resource, $routeParams) {
+    ["$scope", "$resource", "$routeParams", "$location", "$filter",
+     function($scope, $resource, $routeParams, $location, $filter) {
+         $scope.$on('$routeChangeSuccess', function(next, current) {
+             switch($location.path()) {
+             case '/rssindex':
+                 var d = parseDate($routeParams.date);
+                 if(!d) {
+                     d = new Date();
+                 }
+                 $scope.brandText = $filter('date')(d, 'yyyy/MM/dd');
+                 break;
 
-
-         $scope.$on('$routeChangeSuccess', function(next, current) { 
-             $scope.rssDate = parseDate($routeParams.date);
-             // if(!$scope.rssDate) {
-             //     $scope.rssDate = new Date();
-             // }
-             
+             case '/rssSiteIndex':
+                 $scope.brandText = 'SiteIndex';
+                 break;
+             }
          });
 
+         $scope.jump = function() {
+             switch($location.path()) {
+             case '/rssindex':
+                 $location.path('/dateselect').search($routeParams);
+                 break;
 
-         $scope.$watch(function() {
-             return $routeParams.date;
-         }, function(nVal,oVal) {
-             console.log("---", nVal);             
-             console.log("---", oVal);
-         });
+             case '/rssSiteIndex':
+                 // do nothing
+                 break;
+             }
+
+         };
      }]);
 
-
 app.controller('DateSelectController', [
-    '$scope', '$resource', "$routeParams", '$q', 
-    function($scope, $resource, $routeParams, $q) {
+    '$scope', '$resource', "$routeParams", '$q', '$location', '$filter',
+    function($scope, $resource, $routeParams, $q, $location, $filter) {
 
         $scope.today = function() {
             $scope.rssDate = new Date();
+        };
+
+        $scope.view = function() {
+            $location.path('/rssindex').search({date: $filter('date')($scope.rssDate, 'yyyyMMdd')});
         };
 
         $scope.rssDate = parseDate($routeParams.date);
@@ -156,11 +169,7 @@ app.controller('RssIndexController', [
                 r =  r.sort(function(a, b) {
                     return b.mili_time - a.mili_time;
                 });
-                // console.log("1 " + r);
-                // console.log("2 " + $scope.rsses_bg);
-                //$scope.rsses_bg.concat(r);
                 $scope.rsses_bg = r;
-                // console.log("3 " + $scope.rsses_bg);
 
                 deferred.resolve("ok");
             }, function(err) {

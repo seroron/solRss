@@ -31,14 +31,16 @@
           <span class="icon-bar"></span>
         </button>
         <div class="navbar-brand">
-          <a ng-href="/dateselect?date={{rssDate| date:'yyyyMMdd'}}">{{rssDate | date:'yyyy/MM/dd' }}</a>
+          <a ng-href="/dateselect?date={{rssDate| date:'yyyyMMdd'}}" ng-click="navCollapsed = true">
+            {{rssDate | date:'yyyy/MM/dd' }}
+          </a>
         </div>
       </div>
       
       <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
         <ul class="nav navbar-nav">
-          <li><a href="/rssindex">RssList</a></li>
-          <li><a href="/rssSiteIndex">Site</a></li>
+          <li><a href="/rssindex" ng-click="navCollapsed = true">RssList</a></li>
+          <li><a href="/rssSiteIndex" ng-click="navCollapsed = true">Site</a></li>
         </ul>
       </div>
     </nav>

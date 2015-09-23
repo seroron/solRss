@@ -1,12 +1,11 @@
-<div class="rss_content" ng-init="load(false, null)">
+<div class="rss-content" ng-init="load(false, null)">
 
   <div class="list-group"> 
     <div class="list-group-item clearfix" id="rsslistview" ng-class="{read_rss: isRead(r)}" ng-repeat="r in rsses" >
-
-      <h4 class="list-group-item-heading" ng-click="jump(r)">
+      <h4 class="list-group-item-heading rss-title" ng-click="jump(r)">
         <strong>{{r.title}}</strong>
       </h4>
-      <p class="list-group-item-text rss_site_sub">
+      <p class="list-group-item-text rss-site-sub">
         {{r.date.getFullYear()}}/{{r.date.getMonth()+1}}/{{r.date.getDate()}} 
         {{r.date.getHours()}}時{{r.date.getMinutes()}}分{{r.date.getSeconds()}}秒　|　{{r.rssSite.title}}
         <span class="pull-right">

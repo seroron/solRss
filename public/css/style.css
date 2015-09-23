@@ -2,7 +2,7 @@ body {
   padding-top: 70px;
 }
 
-.rss_content {
+.rss-content {
     width: 100%;
     display: block;
 }
@@ -12,11 +12,15 @@ body {
     background-color: #888888;
 }
 
-.rss_site_sub {
+.rss-site-sub {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
     width: 100%;
 
+}
+
+.rss-title {
+    cursor: pointer;
 }

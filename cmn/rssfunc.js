@@ -3,6 +3,8 @@ var request = require('request');
 
 var us = require('underscore');
 
+var rssUA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:9.0.1) Gecko/20100101 Firefox/9.0.1';
+exports.rssUA = rssUA;
 
 exports.getSiteData = function(url, callback) {
 
@@ -47,21 +49,7 @@ exports.updateRssData = function(rssSite, callback) {
     var Rss     = global.db.model('Rss');
     var RssSite = global.db.model('RssSite');
 
-    var req = request(rssSite.link);
     var feedparser = new FeedParser();
-
-    req.on('error', function (err) {
-        console.error("request error: " + rssSite.title +": ", err);
-    });
-    req.on('response', function (res) {
-        var stream = this;
-        if (res.statusCode != 200) {
-            return this.emit('error', new Error('Bad status code'));
-        }
-
-        return stream.pipe(feedparser);
-    });
-
     feedparser.on('error', function(err) {
         console.error("parse error: " + rssSite.title +": ", err);
     });
@@ -98,6 +86,23 @@ exports.updateRssData = function(rssSite, callback) {
     feedparser.on('end',  function(){
         //console.log("parser end");
         callback(null);
+    });
+
+  request({url: rssSite.link,
+           headers: {
+             'User-Agent': rssUA
+           }})
+
+    .on('error', function (err) {
+      console.error("request error: " + rssSite.title +": ", err);
+    })
+    .on('response', function (res) {
+      var stream = this;
+      if (res.statusCode != 200) {
+        return this.emit('error', new Error('Bad status code'));
+      }
+
+      return stream.pipe(feedparser);
     });
 };
 

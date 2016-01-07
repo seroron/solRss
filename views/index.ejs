@@ -42,6 +42,15 @@
         </ul>
       </div>
     </nav>
+
+    <div ng-controller="AlertController">
+      <script type="text/ng-template" id="alert.html">
+        <div class="alert" role="alert">
+          <div ng-transclude></div>
+        </div>
+      </script>
+      <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    </div>
     
     <div ng-view=""></div>
 

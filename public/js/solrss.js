@@ -240,5 +240,10 @@ app.controller('RssSiteIndexController', [
             $scope.rssSites = _.reject($scope.rssSites, 
                                        function(i){return i._id == rss._id;});
         };
+
+      $scope.addSite = function() {
+        console.log("addSite");
+            RssSiteService.save({url: this.url});
+        };
     }
 ]);

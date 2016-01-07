@@ -1,5 +1,13 @@
 <div class="rss-content" ng-init="load(false, null)">
 
+  <form ng-submit="addSite()">
+    <div data-role="fieldcontain">
+      <label for="url" >URL：</label>
+      <input type="text" ng-model="url" data-mini="true" />
+      <input type="submit" value="登録" data-theme="b">
+    </div>
+  </form>
+  
   <div class="list-group"> 
     <div class="list-group-item clearfix" id="rsslistview" ng-repeat="r in rssSites" >
 

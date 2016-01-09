@@ -262,13 +262,14 @@ app.controller('RssSiteIndexController', [
         };
 
         $scope.delSite = function(rss) {
-            RssSiteService.remove({id: rss._id});
-            $scope.rssSites = _.reject($scope.rssSites, 
-                                       function(i){return i._id == rss._id;});
+            if (confirm("削除してよろしいですか？")) {
+                RssSiteService.remove({id: rss._id});
+                $scope.rssSites = _.reject($scope.rssSites, 
+                                           function(i){return i._id == rss._id;});
+            }
         };
 
-      $scope.addSite = function() {
-        console.log("addSite");
+        $scope.addSite = function() {
             RssSiteService.save({url: this.url});
         };
     }

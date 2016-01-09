@@ -38,6 +38,32 @@ app.config(['$routeProvider',
                     });
             }]);
 
+app.directive('whenScrolled', function($window) {
+  return function(scope,  elem,  attr) {
+    var raw = elem[0];
+    angular.element($window).bind('scroll',  function() {
+      console.log("xx: " + (raw.offsetTop + raw.offsetHeight) + ", " + (document.documentElement.scrollTop + window.innerHeight));
+      // console.log("scrollTop: ", raw.scrollTop);
+      // console.log("dh", document.documentElement.height());
+      // console.log("wh", angular.element((window)).height());
+      // console.log("ph", angular.element((document).height()) - angular.element((window)).height());
+      // console.log("raw.scrollTop: ", raw.scrollTop);
+      // console.log("raw.offsetHeight: ", raw.offsetHeight);
+      // console.log("document.documentElement.scrollTop: ", document.documentElement.scrollTop);
+      // console.log("window.innerHeight: ", window.innerHeight);
+
+      console.log("xx: ", raw.scrollTop + raw.offsetHeight - raw.scrollHeight);
+      
+      // if (raw.offsetTop + raw.offsetHeight < document.documentElement.scrollTop + window.innerHeight) {
+      //   scope.$apply(attr.whenScrolled);
+      // }
+      if (raw.scrollTop < document.documentElement.scrollTop + window.innerHeight) {
+        scope.$apply(attr.whenScrolled);
+      }
+    });
+  };
+});
+
 app.controller(
     'NavberController',
     ["$scope", "$resource", "$routeParams", "$location", "$filter",
@@ -105,6 +131,8 @@ app.controller('RssIndexController', [
 
         $scope.load = function(reload, rssSite) {
 
+            $scope.rssLoading = true;
+            
             if(!reload) {
                 $scope.rsses = [];
                 $scope.rsses_bg = [];
@@ -117,26 +145,25 @@ app.controller('RssIndexController', [
 
             $scope.maxRssDate = new Date();
 
-
             if ($scope.rsses_bg.length > 0) {
-                update_rss_view();
+                $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
+                $scope.rsses_bg = [];
+                $scope.rssLoading = false;
                 background_load(rssSite);
             } else {
                 background_load(rssSite).then(
                     function(result) {
-                        update_rss_view();
+                        $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
+                        $scope.rsses_bg = [];
+                        $scope.rssLoading = false;
                         background_load(rssSite);
                     },
                     function(reason) {
+                        $scope.rssLoading = false;
                         alert(reason);
                     }
                 );
             }
-        };
-
-        var update_rss_view = function(newrss) {
-            $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
-            $scope.rsses_bg = [];
         };
 
         var background_load = function(rssSite) {
@@ -157,9 +184,8 @@ app.controller('RssIndexController', [
             }
             
             console.log("q=", q);
-
             var deferred = $q.defer();
-            RssService.query(q, function(r, h) {
+            RssService.query(q, function(r, h) {                
                 r = _.map(r, function(i) {
                     i.date = new Date(i.date);
                     return i;

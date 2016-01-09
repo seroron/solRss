@@ -1,4 +1,4 @@
-<div class="rss-content" ng-init="load(false, null)">
+<div class="rss-content" ng-init="load(false, null)" >
 
   <div class="list-group"> 
     <div class="list-group-item clearfix" id="rsslistview" ng-class="{read_rss: isRead(r)}" ng-repeat="r in rsses" >
@@ -23,8 +23,8 @@
   </div>
 
   <div class="text-center">
-    <div id="load-icon"><div class="fa fa-spinner fa-spin fa-3x"></div>Loading...</div>
-    <button type="button" class="btn btn-lg btn-default" ng-click="loadArticles()">
+    <div id="load-icon" ng-show="rssLoading"><div class="fa fa-spinner fa-spin fa-3x"></div>Loading...</div>
+    <button type="button" class="btn btn-lg btn-default" ng-hide="rssLoading" ng-click="loadArticles()" when-scrolled="console.log('scroll')">
       load 25 articles
     </button>
     <h3>&nbsp;</h3>

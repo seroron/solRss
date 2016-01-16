@@ -119,8 +119,8 @@ app.controller('DateSelectController', [
     }]);
 
 app.controller('RssIndexController', [
-    '$scope', '$resource', "$routeParams", '$q', 
-    function($scope, $resource, $routeParams, $q) {
+    '$scope', '$resource', "$routeParams", '$q', "$location", "$filter", 
+    function($scope, $resource, $routeParams, $q, $location, $filter) {
         
         var RssService = $resource('/rss/:id', 
                                    {id: '@id'},
@@ -237,6 +237,24 @@ app.controller('RssIndexController', [
         $scope.changeFavorite = function(rss) {
             rss.favorite = !rss.favorite;
             RssService.update({id: rss._id}, {favorite: rss.favorite});
+        };
+
+        $scope.goTomorrow = function() {
+            var d = $scope.rssDate.getTime() + 60*60*24*1000;
+            $location.path('/rssindex').search({date: $filter('date')(new Date(d), 'yyyyMMdd')});
+        };
+
+        $scope.goYesterday = function() {
+            var d = $scope.rssDate.getTime() - 60*60*24*1000;
+            $location.path('/rssindex').search({date: $filter('date')(new Date(d), 'yyyyMMdd')});
+        };
+
+        $scope.isToday = function() {
+            var a = new Date();
+            var b = $scope.rssDate;
+            return a.getFullYear() == b.getFullYear() &&
+                a.getMonth() == b.getMonth() &&
+                a.getDate() == b.getDate();
         };
     }
 ]);

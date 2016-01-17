@@ -87,6 +87,21 @@ app.controller(
          };
      }]);
 
+app.controller(
+    'AlertController',
+    ["$scope", "$resource", "$routeParams", "$location", "$filter",
+     function($scope, $resource, $routeParams, $location, $filter) {
+         $scope.alerts = [];
+         
+         $scope.$on('AlertController_showAlert', function(event, args) {
+             $scope.alerts.push(args);
+         });
+
+         $scope.closeAlert = function(index) {
+             $scope.alerts.splice(index, 1);
+         };
+     }]);
+
 app.controller('DateSelectController', [
     '$scope', '$resource', "$routeParams", '$q', '$location', '$filter',
     function($scope, $resource, $routeParams, $q, $location, $filter) {
@@ -258,8 +273,8 @@ app.controller('RssIndexController', [
 ]);
 
 app.controller('RssSiteIndexController', [
-    '$scope', '$resource', "$routeParams", '$q', 
-    function($scope, $resource, $routeParams, $q) {
+    '$scope', '$resource', "$routeParams", '$q', '$rootScope', 
+    function($scope, $resource, $routeParams, $q, $rootScope) {
         
         var RssSiteService = $resource('/rssSite/:id', 
                                        {id: '@_id'});
@@ -286,7 +301,13 @@ app.controller('RssSiteIndexController', [
         };
 
         $scope.addSite = function() {
-            RssSiteService.save({url: this.url});
+            RssSiteService.save({url: this.url},
+                                function(value, responseHeaders) {
+                                    $rootScope.$broadcast('AlertController_showAlert', {type: 'success', msg: "OK"});
+                                },
+                                function(httpResponse) {
+                                    $rootScope.$broadcast('AlertController_showAlert', {type: 'danger', msg: httpResponse});
+                                });
         };
     }
 ]);

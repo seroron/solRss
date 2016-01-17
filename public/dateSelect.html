@@ -1,14 +1,15 @@
 <div class="container-fluid">
   <form>
     <div class="form-group">
-      <label for="rssdate">Rss Date</label>
+      <label for="rssdate">Select Date</label>
       <div>
-        {{rssDate | date:'yyyy/MM/dd'}}
         <datepicker show-weeks="false" ng-model="rssDate" max-date="maxRssDate"></datepicker>
       </div>
     </div>
 
     <button type="button" class="btn btn-default" ng-click="today()">Today</button>
-    <button type="button" ng-click="view()" class="btn btn-primary">View</button>
+    <button type="button" ng-click="showSelectedDate()" class="btn btn-primary">View</button>
+    <hr>
+    <button type="button" ng-click="showFavorite()" class="btn btn-primary">Favorite</button>
   </form>
 </div>

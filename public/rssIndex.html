@@ -28,7 +28,7 @@
     <button type="button" class="btn btn-default" aria-label="yesterday" ng-click="goYesterday()">
       <span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>
     </button>
-    <button type="button" class="btn btn-lg btn-default" ng-hide="rssLoading" ng-click="loadArticles()" when-scrolled="console.log('scroll')">
+    <button type="button" class="btn btn-lg btn-default" ng-hide="rssLoading" ng-click="loadArticles()" when-scrolled="loadArticles()">
       load 25 articles
     </button>
     <button type="button" class="btn btn-default" aria-label="tomorrow" ng-disabled="isToday()" ng-click="goTomorrow()">

@@ -42,24 +42,9 @@ app.directive('whenScrolled', function($window) {
   return function(scope,  elem,  attr) {
     var raw = elem[0];
     angular.element($window).bind('scroll',  function() {
-      console.log("xx: " + (raw.offsetTop + raw.offsetHeight) + ", " + (document.documentElement.scrollTop + window.innerHeight));
-      // console.log("scrollTop: ", raw.scrollTop);
-      // console.log("dh", document.documentElement.height());
-      // console.log("wh", angular.element((window)).height());
-      // console.log("ph", angular.element((document).height()) - angular.element((window)).height());
-      // console.log("raw.scrollTop: ", raw.scrollTop);
-      // console.log("raw.offsetHeight: ", raw.offsetHeight);
-      // console.log("document.documentElement.scrollTop: ", document.documentElement.scrollTop);
-      // console.log("window.innerHeight: ", window.innerHeight);
-
-      console.log("xx: ", raw.scrollTop + raw.offsetHeight - raw.scrollHeight);
-      
-      // if (raw.offsetTop + raw.offsetHeight < document.documentElement.scrollTop + window.innerHeight) {
-      //   scope.$apply(attr.whenScrolled);
-      // }
-      if (raw.scrollTop < document.documentElement.scrollTop + window.innerHeight) {
-        scope.$apply(attr.whenScrolled);
-      }
+        if (raw.offsetTop + raw.offsetHeight < document.documentElement.scrollTop + window.innerHeight) {
+            scope.$apply(attr.whenScrolled);
+        }
     });
   };
 });
@@ -71,11 +56,15 @@ app.controller(
          $scope.$on('$routeChangeSuccess', function(next, current) {
              switch($location.path()) {
              case '/rssindex':
-                 var d = parseDate($routeParams.date);
-                 if(!d) {
-                     d = new Date();
+                 if($routeParams.favorite) {
+                     $scope.brandText = 'Favorite';                     
+                 } else {
+                     var d = parseDate($routeParams.date);
+                     if(!d) {
+                         d = new Date();
+                     }
+                     $scope.brandText = $filter('date')(d, 'yyyy/MM/dd');
                  }
-                 $scope.brandText = $filter('date')(d, 'yyyy/MM/dd');
                  break;
 
              case '/rssSiteIndex':
@@ -106,8 +95,12 @@ app.controller('DateSelectController', [
             $scope.rssDate = new Date();
         };
 
-        $scope.view = function() {
+        $scope.showSelectedDate = function() {
             $location.path('/rssindex').search({date: $filter('date')($scope.rssDate, 'yyyyMMdd')});
+        };
+
+        $scope.showFavorite = function() {
+            $location.path('/rssindex').search({favorite: true});
         };
 
         $scope.rssDate = parseDate($routeParams.date);
@@ -130,7 +123,10 @@ app.controller('RssIndexController', [
                                              }}});
 
         $scope.load = function(reload, rssSite) {
-
+            if($scope.rssLoading) {
+                return;
+            }
+            
             $scope.rssLoading = true;
             
             if(!reload) {
@@ -172,18 +168,20 @@ app.controller('RssIndexController', [
             if(rssSite) {
                 q.rssSite = rssSite;
             }
+            if($routeParams.favorite) {
+                q.favorite = true;
+            } else {            
+                var rd = $scope.rssDate;
+                q.endDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
+                q.beginDate = q.endDate + 60*60*24*1000;
 
-            var rd = $scope.rssDate;
-            q.endDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
-            q.beginDate = q.endDate + 60*60*24*1000;
-
-            if($scope.rsses.length > 0) {
-                var last = $scope.rsses[$scope.rsses.length - 1];
-                q.beginDate = last.mili_time;
-                q.beginID   = last._id;
+                if($scope.rsses.length > 0) {
+                    var last = $scope.rsses[$scope.rsses.length - 1];
+                    q.beginDate = last.mili_time;
+                    q.beginID   = last._id;
+                }
             }
             
-            console.log("q=", q);
             var deferred = $q.defer();
             RssService.query(q, function(r, h) {                
                 r = _.map(r, function(i) {

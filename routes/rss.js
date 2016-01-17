@@ -8,6 +8,9 @@ exports.index = function(req, res){
     if(req.query.rssSite) {
         query.rssSite = req.query.rssSite;
     }
+    if(req.query.favorite) {
+        query.favorite = req.query.favorite;
+    }
 
     query.date = {};
     if(req.query.beginDate) {
@@ -19,10 +22,6 @@ exports.index = function(req, res){
     if(us.isEmpty(query.date)) {
         delete query.date;
     }
-
-    // if(req.query.beginID) {
-    //     query._id = {$ne: req.query.beginID};
-    // }
 
     console.log("rss index:",query);
     rssfunc.getRssList(query, 
@@ -54,13 +53,11 @@ exports.update = function(req, res) {
 
     var data = {};
     if(req.body.read != null) {
-        data.read = req.body.read;
+        data.read = !!req.body.read;
     }
     if(req.body.favorite != null) {
-        data.favorite = req.body.favorite;
+        data.favorite = !!req.body.favorite;
     }
-
-    console.log(data);
 
     Rss.findByIdAndUpdate(req.params['id'], {$set: data})
         .populate('rssSite')

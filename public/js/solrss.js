@@ -56,7 +56,9 @@ app.controller(
          $scope.$on('$routeChangeSuccess', function(next, current) {
              switch($location.path()) {
              case '/rssindex':
-                 if($routeParams.favorite) {
+                 if($routeParams.rssSite) {
+                     $scope.brandText = 'Site';                     
+                 } else if($routeParams.favorite) {
                      $scope.brandText = 'Favorite';                     
                  } else {
                      var d = parseDate($routeParams.date);
@@ -137,7 +139,7 @@ app.controller('RssIndexController', [
                                                  'Content-Type': 'application/json'
                                              }}});
 
-        $scope.load = function(reload, rssSite) {
+        $scope.load = function(reload) {
             if($scope.rssLoading) {
                 return;
             }
@@ -160,14 +162,14 @@ app.controller('RssIndexController', [
                 $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
                 $scope.rsses_bg = [];
                 $scope.rssLoading = false;
-                background_load(rssSite);
+                background_load();
             } else {
-                background_load(rssSite).then(
+                background_load().then(
                     function(result) {
                         $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
                         $scope.rsses_bg = [];
                         $scope.rssLoading = false;
-                        background_load(rssSite);
+                        background_load();
                     },
                     function(reason) {
                         $scope.rssLoading = false;
@@ -179,22 +181,24 @@ app.controller('RssIndexController', [
 
         var background_load = function(rssSite) {
             
-            var q = {};
-            if(rssSite) {
-                q.rssSite = rssSite;
-            }
-            if($routeParams.favorite) {
-                q.favorite = true;
-            } else {            
-                var rd = $scope.rssDate;
-                q.endDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate(), 0, 0, 0, 0).getTime();
-                q.beginDate = q.endDate + 60*60*24*1000;
+            var day0oclock = new Date($scope.rssDate.getFullYear(), $scope.rssDate.getMonth(),
+                                      $scope.rssDate.getDate(), 0, 0, 0, 0).getTime();
 
-                if($scope.rsses.length > 0) {
-                    var last = $scope.rsses[$scope.rsses.length - 1];
-                    q.beginDate = last.mili_time;
-                    q.beginID   = last._id;
-                }
+            var q = {};
+            if($routeParams.rssSite) {
+                q.rssSite = $routeParams.rssSite;
+            } else if($routeParams.favorite) {
+                q.favorite = true;
+            } else {
+                q.endDate = day0oclock;
+            }
+            
+            if($scope.rsses.length > 0) {
+                var last = $scope.rsses[$scope.rsses.length - 1];
+                q.beginDate = last.mili_time;
+                q.beginID   = last._id;
+            } else {
+                q.beginDate = day0oclock + 60*60*24*1000;
             }
             
             var deferred = $q.defer();
@@ -217,7 +221,7 @@ app.controller('RssIndexController', [
         };
 
         $scope.loadArticles = function() {
-            $scope.load(true, '');
+            $scope.load(true);
         };
 
         $scope.jump = function(rss) {
@@ -273,8 +277,8 @@ app.controller('RssIndexController', [
 ]);
 
 app.controller('RssSiteIndexController', [
-    '$scope', '$resource', "$routeParams", '$q', '$rootScope', 
-    function($scope, $resource, $routeParams, $q, $rootScope) {
+    '$scope', '$resource', "$routeParams", '$q', '$rootScope', '$location', 
+    function($scope, $resource, $routeParams, $q, $rootScope, $location) {
         
         var RssSiteService = $resource('/rssSite/:id', 
                                        {id: '@_id'});
@@ -308,6 +312,10 @@ app.controller('RssSiteIndexController', [
                                 function(httpResponse) {
                                     $rootScope.$broadcast('AlertController_showAlert', {type: 'danger', msg: httpResponse});
                                 });
+        };
+
+        $scope.jump = function(rss) {
+            $location.path('/rssindex').search({rssSite: rss._id});            
         };
     }
 ]);

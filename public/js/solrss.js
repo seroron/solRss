@@ -42,7 +42,7 @@ app.directive('whenScrolled', function($window) {
   return function(scope,  elem,  attr) {
     var raw = elem[0];
     angular.element($window).bind('scroll',  function() {
-        if (raw.offsetTop + raw.offsetHeight < document.documentElement.scrollTop + window.innerHeight) {
+        if (raw.offsetTop < (window.scrollY || window.pageYOffset) + window.innerHeight) {
             scope.$apply(attr.whenScrolled);
         }
     });

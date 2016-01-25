@@ -6,8 +6,7 @@
         <strong>{{r.title}}</strong>
       </h4>
       <p class="list-group-item-text rss-site-sub">
-        {{r.date.getFullYear()}}/{{r.date.getMonth()+1}}/{{r.date.getDate()}} 
-        {{r.date.getHours()}}時{{r.date.getMinutes()}}分{{r.date.getSeconds()}}秒　|　{{r.rssSite.title}}
+        {{r.date | date:'yyyy/MM/dd HH:mm'}} | {{r.rssSite.title}}
         <span class="pull-right">
           <button type="button" a class="btn btn-xs btn-default" ng-style="rssReadStyle(r)" ng-click="changeRead(r)">
             <span class="fa fa-book feature-icon"></span>

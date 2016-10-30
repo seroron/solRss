@@ -21,17 +21,19 @@
     </div>
   </div>
 
-  <div class="text-center">
-    <div id="load-icon" ng-show="rssLoading"><div class="fa fa-spinner fa-spin fa-3x"></div>Loading...</div>
-    
+  <div class="text-center">    
     <button type="button" class="btn btn-default" aria-label="yesterday" ng-click="goYesterday()">
-      <span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>previous day
     </button>
-    <button type="button" class="btn btn-lg btn-default" ng-hide="rssLoading" ng-click="loadArticles()" when-scrolled="loadArticles()">
+    <button type="button" class="btn btn-lg btn-default" ng-hide="rssLoading || rssLast" ng-click="loadArticles()" when-scrolled="rssLast || loadArticles()">
       load 25 articles
     </button>
+    <span id="load-icon" ng-show="rssLoading"><div class="fa fa-spinner fa-spin fa-3x"></div>Loading...</span>
+    <span ng-show="rssLast">
+      No more articles
+    </span>
     <button type="button" class="btn btn-default" aria-label="tomorrow" ng-disabled="isToday()" ng-click="goTomorrow()">
-      <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>next day
     </button>
     <h3>&nbsp;</h3>
   </div>

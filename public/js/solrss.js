@@ -129,8 +129,8 @@ app.controller('DateSelectController', [
     }]);
 
 app.controller('RssIndexController', [
-    '$scope', '$resource', "$routeParams", '$q', "$location", "$filter", 
-    function($scope, $resource, $routeParams, $q, $location, $filter) {
+    '$scope', '$resource', "$routeParams", '$q', "$location", "$filter", "$rootScope", 
+    function($scope, $resource, $routeParams, $q, $location, $filter, $rootScope) {
         
         var RssService = $resource('/rss/:id', 
                                    {id: '@id'},
@@ -149,6 +149,7 @@ app.controller('RssIndexController', [
             if(!reload) {
                 $scope.rsses = [];
                 $scope.rsses_bg = [];
+                $scope.rssLast = false;
             }
 
             $scope.rssDate = parseDate($routeParams.date);
@@ -166,14 +167,19 @@ app.controller('RssIndexController', [
             } else {
                 background_load().then(
                     function(result) {
-                        $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
-                        $scope.rsses_bg = [];
-                        $scope.rssLoading = false;
-                        background_load();
+                        if($scope.rsses_bg.length > 0) {
+                            $scope.rsses   = $scope.rsses.concat($scope.rsses_bg);
+                            $scope.rsses_bg = [];
+                            $scope.rssLoading = false;
+                            background_load();
+                        } else {
+                            $scope.rssLoading = false;
+                            $scope.rssLast = true;
+                        }
                     },
                     function(reason) {
                         $scope.rssLoading = false;
-                        alert(reason);
+                        $rootScope.$broadcast('AlertController_showAlert', {type: 'error', msg: reason});
                     }
                 );
             }
